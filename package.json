@@ -1,0 +1,16 @@
+{
+  "name": "playwright-zotobank-qa",
+  "version": "1.0.0",
+  "description": "Suite de tests Playwright (UI + API) sur ZotoBank, application bancaire de démonstration",
+  "private": true,
+  "scripts": {
+    "test": "playwright test",
+    "test:ui": "playwright test --ui",
+    "test:headed": "playwright test --headed",
+    "report": "playwright show-report"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.49.0",
+    "typescript": "^5.7.0"
+  }
+}
