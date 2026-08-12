@@ -5,11 +5,18 @@ on:
     branches: [main]
   pull_request:
     branches: [main]
+  schedule:
+    # Run nocturne à 2h du matin (UTC) contre la prod, tous navigateurs
+    - cron: "0 2 * * *"
   workflow_dispatch:
 
 jobs:
   test:
     runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        browser: [chromium, firefox, webkit]
     steps:
       - uses: actions/checkout@v4
 
@@ -21,16 +28,16 @@ jobs:
       - name: Installer les dépendances
         run: npm ci
 
-      - name: Installer les navigateurs Playwright
-        run: npx playwright install --with-deps chromium
+      - name: Installer le navigateur ${{ matrix.browser }}
+        run: npx playwright install --with-deps ${{ matrix.browser }}
 
-      - name: Lancer les tests
-        run: npx playwright test
+      - name: Lancer les tests (${{ matrix.browser }})
+        run: npx playwright test --project=${{ matrix.browser }}
 
       - name: Archiver le rapport HTML
         uses: actions/upload-artifact@v4
         if: always()
         with:
-          name: playwright-report
+          name: playwright-report-${{ matrix.browser }}
           path: playwright-report/
           retention-days: 14
