@@ -31,8 +31,12 @@ export class NewTransactionPage {
     await this.page.goto("/transactions/new?type=payment");
   }
 
+  destinataire(idUtilisateur: string): Locator {
+    return this.page.getByTestId(`new-transaction-user-item-${idUtilisateur}`);
+  }
+
   async choisirDestinataire(idUtilisateur: string) {
-    await this.page.getByTestId(`new-transaction-user-item-${idUtilisateur}`).click();
+    await this.destinataire(idUtilisateur).click();
   }
 
   async remplirEtEnvoyer(montant: string, description = "") {

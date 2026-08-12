@@ -1,5 +1,4 @@
-import { test, expect } from "@playwright/test";
-import { LoginPage } from "../pages/LoginPage";
+import { test, expect } from "./fixtures";
 import { NewTransactionPage } from "../pages/NewTransactionPage";
 
 // Ces tests couvrent le formulaire de virement sans jamais confirmer un envoi
@@ -7,18 +6,14 @@ import { NewTransactionPage } from "../pages/NewTransactionPage";
 test.describe("Virements", () => {
   let newTransactionPage: NewTransactionPage;
 
-  test.beforeEach(async ({ page }) => {
-    const loginPage = new LoginPage(page);
-    await loginPage.visiter();
-    await loginPage.seConnecter("johndoe", "s3cret");
-    await loginPage.attendreDashboard();
+  test.beforeEach(async ({ page, dashboardPage }) => {
     newTransactionPage = new NewTransactionPage(page);
     await newTransactionPage.visiterEnvoi();
   });
 
   test("n'affiche pas l'utilisateur connecté dans la liste des destinataires", async () => {
     await expect(newTransactionPage.listeUtilisateurs).toBeVisible();
-    await expect(newTransactionPage.page.getByTestId("new-transaction-user-item-u-001")).toHaveCount(0);
+    await expect(newTransactionPage.destinataire("u-001")).toHaveCount(0);
   });
 
   test("refuse un montant à zéro avec un message d'erreur explicite", async () => {
