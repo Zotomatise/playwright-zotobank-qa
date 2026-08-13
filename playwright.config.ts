@@ -18,7 +18,18 @@ export default defineConfig({
     },
     {
       name: "firefox",
-      use: { ...devices["Desktop Firefox"] },
+      use: {
+        ...devices["Desktop Firefox"],
+        // Bug connu Playwright+Firefox sur les runners GitHub Actions : la
+        // résolution DNS essaie l'IPv6 en premier et reste bloquée quand
+        // l'egress IPv6 du runner est cassé vers l'hôte cible, jusqu'au
+        // timeout (30s, systématique sur CHAQUE test, pas un flake ponctuel).
+        launchOptions: {
+          firefoxUserPrefs: {
+            "network.dns.disableIPv6": true,
+          },
+        },
+      },
     },
     {
       name: "webkit",
