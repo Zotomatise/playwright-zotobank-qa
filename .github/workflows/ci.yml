@@ -13,6 +13,10 @@ on:
 jobs:
   test:
     runs-on: ubuntu-latest
+    # Filet de sécurité : le 2026-08-18 le job webkit est resté bloqué 6h sur
+    # un mirroir apt qui ne répondait plus (tué seulement par la limite par
+    # défaut de GitHub). On échoue vite plutôt que de rebrûler des heures.
+    timeout-minutes: 15
     strategy:
       fail-fast: false
       # max-parallel: 1 — les tests tapent sur le VPS de démo ZotoBank partagé
